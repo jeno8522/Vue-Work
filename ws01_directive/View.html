@@ -1,85 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <title>Document</title>
-</head>
-<body>
-  <div id="app"  class="container">
-    <div class="mt-4 p-5 bg-light text-white rounded">
-      <img class="img-thumbnail" src='./img/ssafy_logo.png' />
-      <span class='text-dark'> 도서관리 </span>
-    </div>
-    <nav class="navbar navbar-expand-sm bg-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <div class="mt-4 p-5 bg-light text-white rounded">
+        <img class="img-thumbnail" src="./img/ssafy_logo.png" />
+        <span class="text-dark"> 도서관리 </span>
+      </div>
+      <nav class="navbar navbar-expand-sm bg-light">
         <div class="container-fluid">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="Create.html">도서 등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="List.html">도서 목록</a>
-                </li>
-            </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="Create.html">도서 등록</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="List.html">도서 목록</a>
+            </li>
+          </ul>
         </div>
-    </nav>
-    <div>
-      <table class="table table-bordered">
-        <tr>
-          <th>책 번호</th><td></td>
-        </tr>
-        <tr>
-          <th>제목</th><td></td>
-        </tr>
-        <tr>
-          <th>저자</th><td></td>
-        </tr>
-        <tr>
-          <th>가격</th><td></td>
-        </tr>
-        <tr>
-          <th colspan="2">책 정보</th>
-        </tr>
-        <tr>
-          <th colspan="2"></th>
-        </tr>
-        <tr>
-          <td>
-            <button class="btn btn-primary">목록</button>
-            <button class="btn btn-primary">수정</button>
-            <button class="btn btn-primary">삭제</button>
-          </td>
-        </tr>
-      </table>
+      </nav>
+      <div>
+        <table class="table table-bordered">
+          <tr>
+            <th>책 번호</th>
+            <td>{{book.isbn}}</td>
+          </tr>
+          <tr>
+            <th>제목</th>
+            <td>{{book.title}}</td>
+          </tr>
+          <tr>
+            <th>저자</th>
+            <td>{{book.author}}</td>
+          </tr>
+          <tr>
+            <th>가격</th>
+            <td>{{book.price}}</td>
+          </tr>
+          <tr>
+            <th colspan="2">책 정보</th>
+          </tr>
+          <tr>
+            <th colspan="2" v-text="book.describ"></th>
+          </tr>
+          <tr>
+            <td>
+              <button class="btn btn-primary" @click="moveHandler">목록</button>
+              <button class="btn btn-primary" @click="updateHandler">수정</button>
+              <button class="btn btn-primary" @click="removeHandler">삭제</button>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-  </div>
-  <script>
-    //isbn을 url에서 추출하기 
-    const  params = new URL(document.location).searchParams
-    const  isbn = params.get('isbn')
-  </script>
-</body>
+    <script>
+      const params = new URL(document.location).searchParams;
+      const isbn = params.get("isbn");
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            isbn,
+            book: {},
+          };
+        },
+        created() {
+          const books = JSON.parse(localStorage.getItem("books"));
+          // const books = localStorage.getItem("books");
+          for (let book of books.items) {
+            if (book.isbn === this.isbn) {
+              this.book = book;
+              break;
+            }
+          }
+        },
+
+        methods: {
+          moveHandler() {
+            location.href = "List.html";
+          },
+          updateHandler() {
+            location.href = `Modify.html?isbn=${this.isbn}`;
+          },
+          removeHandler() {
+            const books = JSON.parse(localStorage.getItem("books"));
+            books.items = books.items.filter((item) => this.isbn != item.isbn);
+            localStorage.setItem("books", JSON.stringify(books));
+            alert("삭제 완료!!");
+            this.moveHandler();
+          },
+        },
+      });
+      //isbn을 url에서 추출하기
+      // const params = new URL(document.location).searchParams;
+      // const isbn = params.get("isbn");
+      // const books = localStorage.getItem("books");
+    </script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
