@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>{{title|toH3}}</div>
+      <div @click="showMyName">클릭</div>
+      <div @click="removeVue">Vue 객체 삭제</div>
+      <div v-if="hasResult">{{title}}</div>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            title: "SSAFY",
+          };
+        },
+        /**
+         * filters
+         * - 화면에 렌더링 될 때 호출되며 실제 값을 변경시키지 않고 return 값이 화면에 출력된다.
+         *      => beforeMount()와 beforeUpdate() 이후에 호출 됨.
+         *      => 보간법과 v-bind에 사용할 수 있음.
+         */
+        filters: {
+          toH3: function (value) {
+            //filter함수에 전달되는 인자는 filter를 사용하는 데이터
+            console.log("toH3...........................", value);
+            return value + "hello";
+          },
+        },
+        methods: {
+          //호출할 때마다 매번 수행됨 => 이벤트 처리 용도로 사용이 됨,
+          showMyName() {
+            console.log("showMyName................");
+            return (this.title = "SSAFY HELLO!!!");
+          },
+          removeVue() {
+            app.$destroy();
+          },
+        },
+
+        /**
+         * computed
+         * - 반응형 getter => 반드시 리턴해야 한다.
+         * - 데이터가 변할 때마다 수행되고 반드시 결과를 return 해야 한다.
+         * - 처리 결과가 cache 되고, 데이터가 변하지 않으면 호출되지 않는다.
+         *
+         */
+        computed: {
+          hasResult: function () {
+            console.log("hasResult...............");
+            return this.title.length > 10;
+          },
+        },
+
+        /**
+         * watch
+         *  - 반응형 콜백
+         *  - 데이터가 변하는지 감시하고 있다가 변하면 자동으로 호출됨.
+         *  - return할 필요가 없다. ==> 데이터가 변했을 때, 비동기 통신을 해야 한다면 watch에서 한다.
+         *  - 형식
+         *      속성명 : function(새로운 값, 이전 값)
+         *
+         */
+        watch: {
+          title: function (newValue, oldValue) {
+            console.log("watch......................oldValue:", oldValue);
+            console.log("watch......................newValue:", newValue);
+          },
+        },
+
+        // Vue 객체가 생성되고 Vue 속성들이 초기화되기 전
+        beforeCreate() {
+          console.log("beforeCreate.................................", this.title);
+        },
+
+        // Vue 객체가 생성되고 Vue 속성들이 초기화된 상태
+        created() {
+          console.log("created.................................", this.title);
+        },
+
+        // DOM 트리가 구성되고 화면에 표시(렌더링) 되기 전
+        beforeMount() {
+          console.log("beforeMount.................................", this.title);
+        },
+
+        // DOM 트리가 구성되고 화면에 표시(렌더링) 된 후
+        mounted() {
+          console.log("mounted.................................", this.title);
+        },
+        beforeUpdate() {
+          console.log("beforeUpdate.................................", this.title);
+        },
+        updated() {
+          console.log("updated.................................", this.title);
+        },
+        beforeDestroy() {
+          console.log("beforeDestroy.................................", this.title);
+        },
+        destroyed() {
+          console.log("destroyed.................................", this.title);
+        },
+      });
+    </script>
+  </body>
+</html>
