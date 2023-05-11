@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+		<!-- url 변경 -->
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/ssafydb?serverTimezone=UTC&amp;useUniCode=yes&amp;characterEncoding=UTF-8"/>
+		<property name="username" value="ssafy"/>
+		<property name="password" value="ssafy"/>
+	</bean>	
+	<aop:aspectj-autoproxy/>
+	
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- DTO를 클래스 이름으로 Alias로 사용할 수 있도록   DTO 패키지를 설정 -->
+        <property name="typeAliasesPackage"        value="com.ssafy.test.model.dto"/>
+        <!-- Mapper 지정  
+             ==> spring을 통해 DAO의 구현(Imp)를 자동으로 생성하기 위해서는   Mapper의 위치가 DAO 인터페이스와 동일해야 한다.  
+         -->
+         <property name="mapperLocations"        value="classpath:com/ssafy/test/model/dao/*.xml"/>
+    </bean>
+    
+    <bean id='sqlSession'        class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref='sqlSessionFactoryBean'/>
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+        
+    <!-- spring이 DAO 인터페이스의 구현부를 자동으로 생성하기 위해   Mapper가 있는 package를 scan -->    
+    <bean id="config"        class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+         <!--DAO 가 있는 package 설정 -->
+        <property name="basePackage" value="com.ssafy.test.model.dao"/>        
+    </bean>
+	
+</beans>

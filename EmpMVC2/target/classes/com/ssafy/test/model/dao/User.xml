@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ssafy.test.model.dao.UserDao">
+	<select id="search" parameterType="string" resultType="User">
+		select * from user where id = #{id}
+	</select>
+	
+	<insert id="regist" parameterType="User">
+		insert into user (id, name, pass) values(#{id}, #{name}, #{pass})
+	</insert>
+	
+	<update id="update" parameterType="User">
+		update user set name = #{name} pass = #{pass} where id = #{id}
+	</update>
+	
+	<delete id="remove" parameterType="string">
+		delete from user where id = #{id}
+	</delete>
+</mapper>

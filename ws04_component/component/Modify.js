@@ -76,8 +76,7 @@ export default {
       //데이타 검증
       let err = false;
       let msg = "";
-      !this.book.isbn &&
-        ((msg = "책 번호를 입력해주세요"), (err = true), this.$refs.isbn.focus());
+      !this.book.isbn && ((msg = "책 번호를 입력해주세요"), (err = true), this.$refs.isbn.focus());
       !err & !this.book.title &&
         ((msg = "책 제목을 입력해주세요"), (err = true), this.$refs.title.focus());
       !err & !this.book.author &&
@@ -104,8 +103,8 @@ export default {
         }
         localStorage.setItem("books", JSON.stringify(books));
         alert("수정 완료");
-        location.href = `ViewPage.html?isbn=${this.isbn}`;
+        location.href = `View.html?isbn=${this.isbn}`;
       }
     },
   },
-}
+};
